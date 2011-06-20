@@ -29,9 +29,14 @@ bool read_write_9();
 bool read_write_10();
 bool read_write_11();
 bool read_write_12();
+bool write_remap_read_1();
+bool write_remap_read_2();
+bool write_remap_read_3();
+bool write_remap_read_4();
+bool write_remap_read_5();
 
 /* all functions in an array for looping */
-#define TEST_COUNT 24
+#define TEST_COUNT 29
 bool (*tests[])() = {
 	uninitialise_test, /* 1 */
 	initialised_test, /* 2 */
@@ -57,6 +62,11 @@ bool (*tests[])() = {
 	read_write_10, /* 22 */
 	read_write_11, /* 23 */
 	read_write_12, /* 24 */
+	write_remap_read_1, /* 25 */
+	write_remap_read_2, /* 26 */
+	write_remap_read_3, /* 27 */
+	write_remap_read_4, /* 28 */
+	write_remap_read_5 /* 29 */
 };
 
 int main(int argc, char **argv) {
@@ -283,7 +293,7 @@ bool check_bound_test_5() {
 }
 
 bool read_write_1() {
-	assert(dht_is_initialised());
+	
 
 	void *j;
 
@@ -304,7 +314,7 @@ bool read_write_1() {
 }
 
 bool read_write_2() {
-	assert(dht_is_initialised());
+	
 
 	void *j;
 
@@ -325,7 +335,7 @@ bool read_write_2() {
 }
 
 bool read_write_3() {
-	assert(dht_is_initialised());
+	
 
 	void *j;
 
@@ -346,7 +356,7 @@ bool read_write_3() {
 }
 
 bool read_write_4() {
-	assert(dht_is_initialised());
+	
 
 	void *j;
 
@@ -367,8 +377,7 @@ bool read_write_4() {
 }
 
 bool read_write_5() {
-	assert(dht_is_initialised());
-
+	
 	void *j;
 
 	bool ok;
@@ -388,7 +397,7 @@ bool read_write_5() {
 }
 
 bool read_write_6() {
-	assert(dht_is_initialised());
+	
 
 	void *j;
 
@@ -409,7 +418,7 @@ bool read_write_6() {
 }
 
 bool read_write_7() {
-	assert(dht_is_initialised());
+	
 
 	void *j;
 
@@ -430,7 +439,7 @@ bool read_write_7() {
 }
 
 bool read_write_8() {
-	assert(dht_is_initialised());
+	
 
 	void *j;
 
@@ -451,7 +460,7 @@ bool read_write_8() {
 }
 
 bool read_write_9() {
-	assert(dht_is_initialised());
+	
 
 	void *j;
 
@@ -472,7 +481,7 @@ bool read_write_9() {
 }
 
 bool read_write_10() {
-	assert(dht_is_initialised());
+	
 
 	int i = 65, b;
 	void *j;
@@ -497,7 +506,7 @@ bool read_write_10() {
 }
 
 bool read_write_11() {
-	assert(dht_is_initialised());
+	
 
 	int i = 72, b;
 	void *j;
@@ -523,7 +532,7 @@ bool read_write_11() {
 }
 
 bool read_write_12() {
-	assert(dht_is_initialised());
+	
 
 	int i = 65, b;
 	void *j;
@@ -544,5 +553,164 @@ bool read_write_12() {
 
 	b = *((int*)j);
 	return (b == i);
+
+}
+
+bool write_remap_read_1() {
+
+	int i = 65, b;
+	void *j;
+
+	bool ok;
+	dht_init();
+	ok = dht_init_table(0, 20, false);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	/* expect null */
+	j = &i;
+	dht_write(13, j);
+
+	ok = dht_init_table(9, 14, true);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	j = dht_read(13);
+
+	b = *((int*)j);
+	return (b == i);
+
+}
+
+bool write_remap_read_2() {
+
+	int i = 101, b;
+	void *j;
+
+	bool ok;
+	dht_init();
+	ok = dht_init_table(1, 6, false);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	/* expect null */
+	j = &i;
+	dht_write(5, j);
+
+	ok = dht_init_table(2, 14, true);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	j = dht_read(5);
+
+	b = *((int*)j);
+	return (b == i);
+
+}
+
+bool write_remap_read_3() {
+
+	int i = 1, b;
+	void *j;
+
+	bool ok;
+	dht_init();
+	ok = dht_init_table(101, 1600, false);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	/* expect null */
+	j = &i;
+	dht_write(171, j);
+
+	ok = dht_init_table(100, 172, true);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	j = dht_read(171);
+
+	b = *((int*)j);
+	return (b == i);
+
+}
+
+bool write_remap_read_4() {
+
+	int i = 65, b;
+	void *j;
+
+	bool ok;
+	dht_init();
+	ok = dht_init_table(0, 20, false);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	/* expect null */
+	j = &i;
+	dht_write(0, j);
+
+	ok = dht_init_table(0, 4, true);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	j = dht_read(0);
+
+	b = *((int*)j);
+	return (b == i);
+
+}
+
+bool write_remap_read_5() {
+
+	int i = 65;
+	void *j;
+
+	bool ok;
+	dht_init();
+	ok = dht_init_table(0, 20, false);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	/* expect null */
+	j = &i;
+	dht_write(0, j);
+
+	ok = dht_init_table(0, 4, false);
+	
+	if (!ok) {
+		printf("> malloc fail causes fail not logic fail.\n");
+		return false;
+	}
+
+	j = dht_read(0);
+
+	return (j == NULL);
 
 }
